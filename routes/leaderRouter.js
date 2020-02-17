@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const leaderRouter = express.Router();
 
 leaderRouter.use(bodyParser.json());
+const authenticate = require('../authenticate');
 
 leaderRouter
   .route("/")
@@ -14,7 +15,7 @@ leaderRouter
   .get((req, res, next) => {
     res.end("Will send all the leaders to you!");
   })
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     res.end(
       "Will add the leader: " +
         req.body.name +
@@ -22,11 +23,11 @@ leaderRouter
         req.body.description
     );
   })
-  .put((req, res, next) => {
+  .put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end("PUT operation not supported on /leaderes");
   })
-  .delete((req, res, next) => {
+  .delete(authenticate.verifyUser, (req, res, next) => {
     res.end("Deleating all the leaders!");
   });
 
@@ -39,7 +40,7 @@ leaderRouter
   .get((req, res, next) =>{
     res.end("will send the leader (" + req.params.leaderId + ") to you");
   })
-  .put((req, res, next) => {
+  .put(authenticate.verifyUser, (req, res, next) => {
     res.write("Updating the leader (" + req.params.leaderId + ")");
     res.end(
       " Updating the leader (" +
@@ -49,11 +50,11 @@ leaderRouter
         "about the leader)"
     );
   })
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /leaders/'+ req.params.leaderId);
   })
-  .delete((req, res, next) => {
+  .delete(authenticate.verifyUser, (req, res, next) => {
     res.end("Deleteing the leader (" + req.params.leaderId + ")");
   });
 
